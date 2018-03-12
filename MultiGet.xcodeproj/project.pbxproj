@@ -13,6 +13,7 @@
 		89A7EAD02056D3520017CA06 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89A7EACF2056D3520017CA06 /* Assets.xcassets */; };
 		89A7EAD32056D3520017CA06 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89A7EAD12056D3520017CA06 /* LaunchScreen.storyboard */; };
 		89A7EAD62056D3520017CA06 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A7EAD52056D3520017CA06 /* main.m */; };
+		89A7EADF2056E7A20017CA06 /* FileGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A7EADD2056E7A20017CA06 /* FileGetter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		89A7EAD22056D3520017CA06 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89A7EAD42056D3520017CA06 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89A7EAD52056D3520017CA06 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		89A7EADD2056E7A20017CA06 /* FileGetter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileGetter.m; sourceTree = "<group>"; };
+		89A7EADE2056E7A20017CA06 /* FileGetter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileGetter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,7 @@
 		89A7EAC52056D3520017CA06 /* MultiGet */ = {
 			isa = PBXGroup;
 			children = (
+				89A7EADC2056E7370017CA06 /* FileGetter */,
 				89A7EAC62056D3520017CA06 /* AppDelegate.h */,
 				89A7EAC72056D3520017CA06 /* AppDelegate.m */,
 				89A7EAC92056D3520017CA06 /* ViewController.h */,
@@ -69,6 +73,15 @@
 				89A7EAD52056D3520017CA06 /* main.m */,
 			);
 			path = MultiGet;
+			sourceTree = "<group>";
+		};
+		89A7EADC2056E7370017CA06 /* FileGetter */ = {
+			isa = PBXGroup;
+			children = (
+				89A7EADE2056E7A20017CA06 /* FileGetter.h */,
+				89A7EADD2056E7A20017CA06 /* FileGetter.m */,
+			);
+			path = FileGetter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +157,7 @@
 			files = (
 				89A7EACB2056D3520017CA06 /* ViewController.m in Sources */,
 				89A7EAD62056D3520017CA06 /* main.m in Sources */,
+				89A7EADF2056E7A20017CA06 /* FileGetter.m in Sources */,
 				89A7EAC82056D3520017CA06 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

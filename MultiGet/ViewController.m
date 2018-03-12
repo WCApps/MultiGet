@@ -7,12 +7,13 @@
 //
 
 #import "ViewController.h"
+#import "FileGetter.h"
 
 //TODO Add Default Values Somewhere
 //Or get from server
 #define DEFAULT_FILE_URL @"http://73361de1.bwtest-aws.pravala.com/384MB.jar"
 #define DEFAULT_FILE_CHUNKS @"4"
-#define DEFAULT_MiB_SIZE @"1"
+#define DEFAULT_BYTE_SIZE @"1024"
 
 @interface ViewController ()
 //Text inputs for file get.
@@ -35,7 +36,15 @@
     //Setup Interface with Defaults.
     _url_TF.text = DEFAULT_FILE_URL;
     _noOfChunks_TF.text = DEFAULT_FILE_CHUNKS;
-    _sizeOfChunks_TF.text = DEFAULT_MiB_SIZE;
+    _sizeOfChunks_TF.text = DEFAULT_BYTE_SIZE;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    //TODO Add Tap Event, to close keyboard.
+    //Needed for closing number keyboard on Non-iPads.
 }
 
 - (void)didReceiveMemoryWarning {
@@ -43,7 +52,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-
 - (IBAction)GetFile:(UIButton *)sender {
+    [[FileGetter sharedInstance] testGet1MB];
+}
+
+#pragma TextField Delegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    //To close the keyboard when pressing return.
+    [textField resignFirstResponder];
+    return YES;
 }
 @end
