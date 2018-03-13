@@ -9,10 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+typedef void (^FileGetterCompletionHandler)(BOOL success);
+
 @interface FileGetter : NSObject 
 
 + (FileGetter *) sharedInstance;
 
--(void)testGet1MB;
+-(void)requestFileFromUrl:(NSURL*)url withNoOfChunks:(NSInteger)noOfChunks sizeOfChunk:(NSInteger)chunkSize replyTo:(FileGetterCompletionHandler)completionHandler;
+-(NSData*) getCombinedData;
+-(NSURL*) getDatafileURL;
 
 @end

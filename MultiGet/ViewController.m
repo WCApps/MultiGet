@@ -11,9 +11,9 @@
 
 //TODO Add Default Values Somewhere
 //Or get from server
-#define DEFAULT_FILE_URL @"http://73361de1.bwtest-aws.pravala.com/384MB.jar"
-#define DEFAULT_FILE_CHUNKS @"4"
-#define DEFAULT_BYTE_SIZE @"1024"
+static NSString* _defaultFileURL = @"http://73361de1.bwtest-aws.pravala.com/384MB.jar";
+static NSString* _defaultFileChunks = @"4";
+static NSString* _defaultFileSize = @"1000000";
 
 @interface ViewController ()
 //Text inputs for file get.
@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *noOfChunks_TF;
 @property (weak, nonatomic) IBOutlet UITextField *sizeOfChunks_TF;
 
+@property (weak, nonatomic) IBOutlet UIButton *getFileButton;
 
 //Action when "Get File" Button pressed
 - (IBAction)GetFile:(UIButton *)sender;
@@ -34,9 +35,12 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     //Setup Interface with Defaults.
-    _url_TF.text = DEFAULT_FILE_URL;
-    _noOfChunks_TF.text = DEFAULT_FILE_CHUNKS;
-    _sizeOfChunks_TF.text = DEFAULT_BYTE_SIZE;
+    _url_TF.text = _defaultFileURL;
+    _noOfChunks_TF.text = _defaultFileChunks;
+    
+    // Chunks size currently in Bytes - This so that if fractions of MiB is selected,
+    // then do not have to check that any bites are missed when doing division.
+    _sizeOfChunks_TF.text = _defaultFileSize;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -53,7 +57,88 @@
 }
 
 - (IBAction)GetFile:(UIButton *)sender {
-    [[FileGetter sharedInstance] testGet1MB];
+    
+    //TODO - Check input, Values are integers and within range, as well as check URL exists.
+    //Currently no check made.
+    
+    [self lockInterfaceForDownload];
+    
+    [[FileGetter sharedInstance] requestFileFromUrl:[NSURL URLWithString:_url_TF.text] withNoOfChunks:[_noOfChunks_TF.text integerValue] sizeOfChunk:[_sizeOfChunks_TF.text integerValue] replyTo:^(BOOL success)
+     {
+         //Check success of download
+         if (success)
+         {
+             NSData* data = [[FileGetter sharedInstance] getCombinedData];
+             NSLog(@"CONCATENATED DATA:\n%@",data);
+             NSLog(@"FILE URL:\n%@",[[[FileGetter sharedInstance] getDatafileURL] path]);
+             //interface changes to be completed on main branch
+             [self performSelectorOnMainThread:@selector(downloadSuccess) withObject:nil waitUntilDone:YES];
+         }
+         else
+         {
+            //Show Error to user
+            [self performSelectorOnMainThread:@selector(errorWithDownloadMessage) withObject:nil waitUntilDone:YES];
+         }
+     }];
+}
+
+#pragma Success/Error Handler
+
+-(void)downloadSuccess
+{
+    NSString* successMessage = [NSString stringWithFormat:@"Please find file at:\n\n%@",
+                                [[[FileGetter sharedInstance] getDatafileURL] path]];
+    
+    
+    UIAlertController * view=   [UIAlertController
+                                 alertControllerWithTitle:@"SUCCESS"
+                                 message:successMessage
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* ok = [UIAlertAction
+                         actionWithTitle:@"OK"
+                         style:UIAlertActionStyleCancel
+                         handler:^(UIAlertAction * action)
+                         {
+                             [self unlockInterface];
+                         }];
+    
+    [view addAction:ok];
+    
+    [self presentViewController:view animated:YES completion:nil];
+}
+
+-(void)errorWithDownloadMessage
+{
+    UIAlertController * view=   [UIAlertController
+                                 alertControllerWithTitle:@"Error"
+                                 message:@"Something went wrong with download."
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* ok = [UIAlertAction
+                         actionWithTitle:@"OK"
+                         style:UIAlertActionStyleCancel
+                         handler:^(UIAlertAction * action)
+                         {
+                             [self unlockInterface];
+                         }];
+    
+    [view addAction:ok];
+    
+    [self presentViewController:view animated:YES completion:nil];
+}
+
+#pragma Modal Functions for (un)locking interface
+-(void) lockInterfaceForDownload
+{
+    //TODO - Add ModalView and ActivityIndicator to lock interface. Currently Just disable button to stop double press
+    _getFileButton.enabled = false;
+}
+
+-(void) unlockInterface
+{
+    //TODO - remove ModalView and ActivityIndicator. Enable button
+    _getFileButton.enabled = true;
 }
 
 #pragma TextField Delegate

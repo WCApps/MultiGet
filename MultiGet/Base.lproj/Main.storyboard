@@ -105,6 +105,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="getFileButton" destination="ARf-d5-nlT" id="ox3-SN-acn"/>
                         <outlet property="noOfChunks_TF" destination="Nop-xP-gD3" id="iNr-9N-nqY"/>
                         <outlet property="sizeOfChunks_TF" destination="so0-yd-Rel" id="vVZ-0I-7w7"/>
                         <outlet property="url_TF" destination="XYx-ut-vw7" id="IUG-Gl-hp9"/>

@@ -13,7 +13,9 @@ typedef void (^ChunkCompletionHandler)(BOOL success, NSInteger chunkNumber);
 
 @interface ChunkGetter : NSObject
 
-//range needs to be in format "bytes=0-1023"
--(void)initWithRange:(NSString*)range fromURL:(NSURL*)url usingChunkNumber:(NSInteger)chunkNumber replyingTo:(ChunkCompletionHandler)completionHandler;
+//NOTE: range needs to be in format "bytes=0-1023"
+-(id)initWithRange:(NSString*)range fromURL:(NSURL*)url usingChunkNumber:(NSInteger)chunkNumber;
+-(void) requestChunk:(ChunkCompletionHandler)completionHandler;
+-(NSData*) getData;
 
 @end
