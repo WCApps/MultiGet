@@ -20,8 +20,7 @@ static NSString* _defaultFileSize = @"1000000";
 @property (weak, nonatomic) IBOutlet UITextField *url_TF;
 @property (weak, nonatomic) IBOutlet UITextField *noOfChunks_TF;
 @property (weak, nonatomic) IBOutlet UITextField *sizeOfChunks_TF;
-
-@property (weak, nonatomic) IBOutlet UIButton *getFileButton;
+@property (weak, nonatomic) IBOutlet UIButton *getFileButton; //for enabling/disabling when downloading
 
 //Action when "Get File" Button pressed
 - (IBAction)GetFile:(UIButton *)sender;
@@ -61,22 +60,25 @@ static NSString* _defaultFileSize = @"1000000";
     //TODO - Check input, Values are integers and within range, as well as check URL exists.
     //Currently no check made.
     
-    [self lockInterfaceForDownload];
+    [self lockInterfaceForDownload]; // So download button cannot be pressed twice
     
+    //Set request with information added in the TextFields
     [[FileGetter sharedInstance] requestFileFromUrl:[NSURL URLWithString:_url_TF.text] withNoOfChunks:[_noOfChunks_TF.text integerValue] sizeOfChunk:[_sizeOfChunks_TF.text integerValue] replyTo:^(BOOL success)
      {
          //Check success of download
          if (success)
          {
-             NSData* data = [[FileGetter sharedInstance] getCombinedData];
-             NSLog(@"CONCATENATED DATA:\n%@",data);
+             //Debug output the data and quick way to find the file
+             NSLog(@"CONCATENATED DATA:\n%@",[[FileGetter sharedInstance] getCombinedData]);
              NSLog(@"FILE URL:\n%@",[[[FileGetter sharedInstance] getDatafileURL] path]);
-             //interface changes to be completed on main branch
+             
+             //interface changes to be completed on main thread
              [self performSelectorOnMainThread:@selector(downloadSuccess) withObject:nil waitUntilDone:YES];
          }
          else
          {
             //Show Error to user
+            //interface changes to be completed on main thread
             [self performSelectorOnMainThread:@selector(errorWithDownloadMessage) withObject:nil waitUntilDone:YES];
          }
      }];
@@ -86,6 +88,7 @@ static NSString* _defaultFileSize = @"1000000";
 
 -(void)downloadSuccess
 {
+    //TODO - Get message strings from Localisation Strings
     NSString* successMessage = [NSString stringWithFormat:@"Please find file at:\n\n%@",
                                 [[[FileGetter sharedInstance] getDatafileURL] path]];
     
@@ -110,6 +113,7 @@ static NSString* _defaultFileSize = @"1000000";
 
 -(void)errorWithDownloadMessage
 {
+    //TODO - Get message strings from Localisation Strings
     UIAlertController * view=   [UIAlertController
                                  alertControllerWithTitle:@"Error"
                                  message:@"Something went wrong with download."
@@ -131,7 +135,8 @@ static NSString* _defaultFileSize = @"1000000";
 #pragma Modal Functions for (un)locking interface
 -(void) lockInterfaceForDownload
 {
-    //TODO - Add ModalView and ActivityIndicator to lock interface. Currently Just disable button to stop double press
+    //TODO - Add ModalView and ActivityIndicator to lock interface in separate common file.
+    //Currently Just disable button to stop double press
     _getFileButton.enabled = false;
 }
 
@@ -145,6 +150,7 @@ static NSString* _defaultFileSize = @"1000000";
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     //To close the keyboard when pressing return.
+    //TODO - does not work with number keyboard and needs Tap Gesture to close keyboard
     [textField resignFirstResponder];
     return YES;
 }

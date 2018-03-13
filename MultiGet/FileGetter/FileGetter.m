@@ -10,7 +10,8 @@
 #include "ChunkGetter.h"
 #include "CommonGetter.h"
 
-//TODO - Set/Get Directory for datafile, currently set as
+//TODO - Set/Get Directory for datafile, currently set as static
+//This will probably be set depending on file etc.
 static NSString* _defaultDirectoryName = @"NewFileDir";
 static NSString* _defaultDataFileName= @"Data.dat";
 
@@ -18,7 +19,7 @@ static FileGetter *singleton;
 
 @implementation FileGetter
 {
-    NSMutableData* _storedDataFile;
+    NSMutableData* _storedCombinedData;
     NSMutableArray* _chunkGetterArray;
     NSUInteger _noOfChunksCompleted;
     NSURL* _fullDataFileURL;
@@ -57,21 +58,25 @@ static FileGetter *singleton;
         //create the chunkGetter
         ChunkGetter* chunkGetter = [[ChunkGetter alloc] initWithRange:rangeString fromURL:url usingChunkNumber:i];
         
-        //Store chunkGetter
+        //Store chunkGetter in Array for combining later
         [_chunkGetterArray addObject:chunkGetter];
         
-        //Set the request in motion
+        //Set the chunk request in motion
         [chunkGetter requestChunk:^(BOOL success, NSInteger chunkNumber) {
+                //Chunk completed, handle if succeed or not
                  if(success)
                  {
                     _noOfChunksCompleted++;
+                    //check if all chunks are returned, if not do nothing.
                     if(_noOfChunksCompleted == noOfChunks)
                      {
-                        //then build the file and send succes to CompletionHandler
-                        [self buildDataFileFromChunks];
+                        //When all chunks are returned
+                        //then build the file and send success to CompletionHandler
+                        [self buildDataFromChunks];
          
-                        // Add combined daat to a file
-                        [_storedDataFile writeToFile:[_fullDataFileURL path] atomically:YES];
+                        // Add combined data to a file
+                        //TODO - check if any problem with creating file. If so need to send Failure.
+                        [_storedCombinedData writeToFile:[_fullDataFileURL path] atomically:YES];
          
                          if(completionHandler) //check completionHandler is still alive
                              completionHandler(true); //SUCCESS
@@ -93,11 +98,11 @@ static FileGetter *singleton;
 {
     //setup for new file request
     //reset needed variables and arrays.
-    //delete any existing file.
+    //delete any existing data file.
     
     [CommonGetter removeFileAt:_fullDataFileURL];
     _noOfChunksCompleted = 0;
-    _storedDataFile = nil;
+    _storedCombinedData = nil;
 
     if(!_chunkGetterArray)
     {
@@ -106,39 +111,46 @@ static FileGetter *singleton;
     }
     else
     {
-        //remove all objects
+        //array exists, remove all objects
         [_chunkGetterArray removeAllObjects];
     }
 }
 
--(void) buildDataFileFromChunks
+-(void) buildDataFromChunks
 {
     for(int i=0;i < [_chunkGetterArray count]; i++)
     {
         ChunkGetter* currentChunk = [_chunkGetterArray objectAtIndex:i]; // get the ChunkGetter from array
-        NSData* dataToCombine = [currentChunk getData]; //Get the data that chunk getter is holding
+        NSData* dataToCombine = [currentChunk getData]; //Get the data from ChunkGetter
         
         if(dataToCombine)
         {
             if(i == 0)
-                _storedDataFile= [ dataToCombine mutableCopy];
+            {
+                //First NSData needs to be a mutable copy, Otherwise AppendData Does not work
+                _storedCombinedData= [ dataToCombine mutableCopy];
+            }
             else
-                //if there is data, then combine it
-                [_storedDataFile appendData:dataToCombine];
+            {
+                //Combine all data in order to the NSDataStore.
+                [_storedCombinedData appendData:dataToCombine];
+            }
         }
         else
         {
             //if there is no data, something has gone wrong.
             //Make datafile nil and stop looping
-            _storedDataFile = nil;
+            _storedCombinedData = nil;
             break;
         }
     }
 }
 
+#pragma Get Functions
+
 -(NSData*) getCombinedData
 {
-    return _storedDataFile;
+    return _storedCombinedData;
 }
         
 -(NSURL*) getDatafileURL

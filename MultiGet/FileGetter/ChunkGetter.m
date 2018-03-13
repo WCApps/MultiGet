@@ -32,9 +32,11 @@ NSString* _range; //NOTE: range needs to be in format "bytes=0-1023"
     //TODO Remove storedData file aswell.
     _storedData = nil;
     
+    //SETUP Request
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:_url];
     [request setValue:_range   forHTTPHeaderField:@"Range"];
     
+    //Send Request using the NSURL Session
     NSURLSessionDataTask *dataTask =  [[NSURLSession sharedSession] dataTaskWithRequest:request
                                                                       completionHandler:^(NSData *data,
                                                                                           NSURLResponse *response,
@@ -43,6 +45,7 @@ NSString* _range; //NOTE: range needs to be in format "bytes=0-1023"
                                            //Check if there is an error and report back.
                                            if (error)
                                            {
+                                               //TODO - If Error, Pass Response/Error Message back to User Interface for display to user.
                                                NSLog(@"Download Error:%@",error.description);
                                                if(completionHandler) // do nothing if the CompletionHandler is not alive
                                                {
