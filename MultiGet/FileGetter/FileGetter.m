@@ -1,5 +1,5 @@
 //
-//  FileGetter.cpp
+//  FileGetter.m
 //  MultiGet
 //
 //  Created by Clive on 12/03/2018.
@@ -30,7 +30,7 @@ static FileGetter *singleton;
 -(void)testGet1MB
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://73361de1.bwtest-aws.pravala.com/384MB.jar"]];
-    [request setValue:@"bytes=0-1024"   forHTTPHeaderField:@"Range"];
+    [request setValue:@"bytes=0-1023"   forHTTPHeaderField:@"Range"];
     
      NSURLSessionDataTask *dataTask =  [[NSURLSession sharedSession] dataTaskWithRequest:request
                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
