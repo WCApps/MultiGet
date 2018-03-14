@@ -9,10 +9,12 @@
 #include "ChunkGetter.h"
 
 @implementation ChunkGetter
-NSData* _storedData;
-NSURL* _url;
-NSInteger _chunkNumber;
-NSString* _range; //NOTE: range needs to be in format "bytes=0-1023"
+{
+    NSData* _storedData;
+    NSURL* _url;
+    NSInteger _chunkNumber;
+    NSString* _range; //NOTE: range needs to be in format "bytes=0-1023"
+}
 
 -(id)initWithRange:(NSString*)range fromURL:(NSURL*)url usingChunkNumber:(NSInteger)chunkNumber
 {

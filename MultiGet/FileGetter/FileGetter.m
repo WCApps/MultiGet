@@ -13,7 +13,7 @@
 //TODO - Set/Get Directory for datafile, currently set as static
 //This will probably be set depending on file etc.
 static NSString* _defaultDirectoryName = @"NewFileDir";
-static NSString* _defaultDataFileName= @"Data.dat";
+static NSString* _defaultDataFileName= @"384MB.jar";
 
 static FileGetter *singleton;
 

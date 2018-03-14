@@ -13,7 +13,7 @@
 //Or get from server
 static NSString* _defaultFileURL = @"http://73361de1.bwtest-aws.pravala.com/384MB.jar";
 static NSString* _defaultFileChunks = @"4";
-static NSString* _defaultFileSize = @"1000000";
+static NSString* _defaultFileSize = @"1048576";
 
 @interface ViewController ()
 //Text inputs for file get.
